@@ -1,0 +1,47 @@
+An NTuple-based command line plagiarism checker. 
+
+This program takes in 4 arguments with the last argument being optional. If it's not put in, the tuple size is set to 3 by default.
+
+args[0] = filename of file containing lists of synonym words. All words put on one line are assumed to be synonyms. 
+args[1] = filename of first file being compared
+args[2] = filename of second file being compared 
+args[3] = tuple size
+
+How to run: 
+
+javac *.java Run : java FileReader synonymsListFileName file1FileName file2FileName tupleSize 
+
+Explanation of classes: 
+
+FileReader = driver file that parses command line arguments and creates PlagiarismDetector object
+PlagiarismDetector = creates PlagiarismDetector object containing fields of SynonymMap and two NTupleLists from the two files parsed in. You can call plagPerc() on this object to return the percentage of plagiarism.
+SynonymMap = creates SynonymMap by reading in synonym word file contents and hashing each line of synonyms to a unique key.
+NTupleList = creates NTupleList by reading in text file and chunking it up into tuples of size N, replacing all words present in synonym map with its numeric key from the synonym map.
+
+Some sample test cases provided and their tuples spelled out: 
+
+1. FileReader syns file1 file2 = the original test case depicted (100%)
+2. FileReader syns file1 file2b = the original test case depicted (50%)
+3. FileReader synsc file1c file2c = more complex test case (100%) 
+	the dog went/dog went for/went for a/for a fast
+	the canine go/canine go for/go for a/for a quick
+4. FileReader synsc file1c file2c 4 = more complex test case with N put in manually (100%) 
+	the dog went for/dog went for a/went for a fast/for a fast jog
+	the canine go for/canine go for a/go for a quick/for a quick run
+5. FileReader synsc file1d file2c = more complex test case (20%)
+	the cat went/cat went for/went for a/for a slow/a slow run
+	the canine go/canine go for/go for a/for a quick/a quick run
+6. FileReader synsc file1d file2d 4 = more complex test case (0%)
+	the cat went for/cat went for a/went for a slow
+	the canine go for/canine go for a/go for a quick
+7. FileReader synsc file1c file2 = (50%)
+	the dog went/dog went for/went for a/for a fast/a fast jog
+	go for a/for a jog
+	
+Assumptions made: 
+
+1. If one NTuple matches another, that returns (1) match even if there are more matches beyond, since that might skew the percentage. 
+2. Matching NTuples, even ones out of order, are still considered plagiarism (the person could have changed the order of the plagiarized text) 
+3. Synonym list or input files might contain irregularities with casing and punctuation and therefore lowercased and removed all punctuation
+
+
